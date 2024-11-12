@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student CRUD App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            padding-left: 40px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        .form-container, .table-container {
+            margin-top: 20px;
+        }
+        input[type="text"], button {
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 95%;
+        }
+        button {
+            cursor: pointer;
+            background-color: #28a745;
+            color: #fff;
+        }
+        button:hover{
+            background-color: #218838; /* Darker green on hover */
+        }
+        table {
+            width: 96%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .edit, .delete {
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .edit { background-color: #f0ad4e; } /* Yellow color */
+        .delete { background-color: #d9534f; } /* Red color */
+    </style>
+</head>
+<body>
+    <div style="background-color: #ccc; width: 15%; padding: 3px; border-radius: 10px;"><h1 style="margin-left: 10px;">CRUD App</h1></div>
+
+    <h1>Student Table</h1>
+
+    <!-- Student Table -->
+    <div class="table-container">
+        <table id="students-table">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Degree</th>
+                    <th>City</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="students-list">
+                <!-- Dynamic rows will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Student Registration Form -->
+    <h2>Student Registration Form</h2>
+    <div class="form-container">
+        <input type="text" id="roll-no" placeholder="Roll No">
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="degree" placeholder="Degree">
+        <input type="text" id="city" placeholder="City">
+        <button onclick="addStudent()">Add Student</button>
+        <button onclick="updateStudent()" id="update-btn" style="display: none;">Update Student</button>
+    </div>
+
+    <script>
+        let students = [];
+        let editIndex = -1;
+
+        // Add new student
+        function addStudent() {
+            const rollNo = document.getElementById("roll-no").value.trim();
+            const name = document.getElementById("name").value.trim();
+            const degree = document.getElementById("degree").value.trim();
+            const city = document.getElementById("city").value.trim();
+
+            if (rollNo && name && degree && city) {
+                students.push({ rollNo, name, degree, city });
+                clearForm();
+                renderStudents();
+            }
+        }
+
+        // Display students in the table
+        function renderStudents() {
+            const studentsList = document.getElementById("students-list");
+            studentsList.innerHTML = "";
+            students.forEach((student, index) => {
+                studentsList.innerHTML += `
+                    <tr>
+                        <td>${student.rollNo}</td>
+                        <td>${student.name}</td>
+                        <td>${student.degree}</td>
+                        <td>${student.city}</td>
+                        <td>
+                            <button class="edit" onclick="editStudent(${index})">Edit</button>
+                            <button class="delete" onclick="deleteStudent(${index})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Edit student
+        function editStudent(index) {
+            document.getElementById("roll-no").value = students[index].rollNo;
+            document.getElementById("name").value = students[index].name;
+            document.getElementById("degree").value = students[index].degree;
+            document.getElementById("city").value = students[index].city;
+            document.getElementById("update-btn").style.display = "inline-block";
+            document.querySelector("button[onclick='addStudent()']").style.display = "none";
+            editIndex = index;
+        }
+
+        // Update student
+        function updateStudent() {
+            const rollNo = document.getElementById("roll-no").value.trim();
+            const name = document.getElementById("name").value.trim();
+            const degree = document.getElementById("degree").value.trim();
+            const city = document.getElementById("city").value.trim();
+
+            if (rollNo && name && degree && city) {
+                students[editIndex] = { rollNo, name, degree, city };
+                clearForm();
+                document.getElementById("update-btn").style.display = "none";
+                document.querySelector("button[onclick='addStudent()']").style.display = "inline-block";
+                editIndex = -1;
+                renderStudents();
+            }
+        }
+
+        // Delete student
+        function deleteStudent(index) {
+            students.splice(index, 1);
+            renderStudents();
+        }
+
+        // Clear form fields
+        function clearForm() {
+            document.getElementById("roll-no").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("degree").value = "";
+            document.getElementById("city").value = "";
+        }
+    </script>
+
+</body>
+</html>
